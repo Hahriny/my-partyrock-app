@@ -49,7 +49,15 @@ jobs:
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
             --region ap-southeast-1 \
             --no-confirm-changeset \
-            --no-fail-on-empty-changeset
+            --no-fail-on-empty-changeset || {
+              echo "=== STACK EVENTS (failures) ==="
+              aws cloudformation describe-stack-events \
+                --stack-name learning-steps-for-autistics-kids \
+                --region ap-southeast-1 \
+                --query "StackEvents[?contains(ResourceStatus,'FAILED')].{Resource:LogicalResourceId,Status:ResourceStatus,Reason:ResourceStatusReason}" \
+                --output table
+              exit 1
+            }
 
       # ── 7. Read CloudFormation outputs & inject into frontend ─────────────
       - name: Inject API URLs into frontend
