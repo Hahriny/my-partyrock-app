@@ -590,6 +590,33 @@
     50% { opacity: 1; transform: scale(1.5); }
   }
 
+  /* ── Inline writing inputs (inside Writing Practice panel) ── */
+  .inline-writing-input {
+    display: block;
+    width: 100%;
+    margin: 8px 0 16px;
+    padding: 12px 16px;
+    border: 3px dashed #ffa726;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-family: 'Comic Sans MS', 'Segoe UI', cursive, sans-serif;
+    background: #fffde7;
+    color: #333;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  .inline-writing-input:focus {
+    border-color: #66bb6a;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(102,187,106,0.2);
+  }
+
+  .inline-writing-input::placeholder {
+    color: #bbb;
+    font-style: italic;
+  }
+
   /* ── Placeholder text ── */
   .placeholder-text { color: #bbb; font-style: italic; padding: 20px; text-align: center; }
 </style>
@@ -873,6 +900,32 @@ function renderMdLine(text) {
     span.className += ' md-hr';
     span.innerHTML = '<hr style="border:none;border-top:2px dashed #e0e0e0;margin:8px 0"/>';
     return span;
+  }
+
+  // Insert a text input box after "Now you try" lines
+  if (/now you try/i.test(text)) {
+    let cls = '';
+    let cleaned = text;
+    if (/^\* /.test(text) || /^- /.test(text)) { cls = 'md-bullet'; cleaned = text.replace(/^[*-] /, ''); }
+
+    cleaned = cleaned
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+    if (cls) span.classList.add(cls);
+    span.innerHTML = cleaned;
+
+    // Create a wrapper that holds the label + input
+    const wrapper = document.createElement('div');
+    wrapper.className = 'md-line';
+    wrapper.appendChild(span);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'inline-writing-input';
+    input.placeholder = 'Type here! ✏️';
+    wrapper.appendChild(input);
+    return wrapper;
   }
 
   let cls = '';
