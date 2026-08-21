@@ -490,8 +490,8 @@
   /* ── Fun Illustration Cards ── */
   .fun-illustration {
     position: relative;
-    height: 220px;
-    border-radius: 16px;
+    height: 280px;
+    border-radius: 24px;
     background: linear-gradient(135deg, #fff9c4, #f8bbd0, #b3e5fc, #c8e6c9);
     background-size: 400% 400%;
     animation: bgShift 8s ease infinite;
@@ -500,45 +500,94 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(255,255,255,0.5), 0 8px 32px rgba(0,0,0,0.08);
+    border: 3px solid rgba(255,255,255,0.7);
+  }
+
+  .fun-illustration::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+    animation: shimmer 5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+    50% { transform: translate(20%, 20%) rotate(180deg); opacity: 0.8; }
   }
 
   .illustration-center {
-    font-size: 4.5rem;
+    font-size: 5.5rem;
     animation: bounce 2s ease-in-out infinite;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+    z-index: 2;
+    position: relative;
   }
 
   @keyframes bounce {
     0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-12px) scale(1.1); }
+    30% { transform: translateY(-16px) scale(1.15); }
+    60% { transform: translateY(-4px) scale(1.05); }
   }
 
   .illustration-label {
-    margin-top: 10px;
-    font-size: 1rem;
-    font-weight: 800;
+    margin-top: 14px;
+    font-size: 1.15rem;
+    font-weight: 900;
     color: #4a148c;
     letter-spacing: 0.5px;
-    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.9);
+    z-index: 2;
+    position: relative;
+    background: rgba(255,255,255,0.6);
+    padding: 6px 18px;
+    border-radius: 20px;
   }
 
   .float-emoji {
     position: absolute;
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     animation: floatAround 4s ease-in-out infinite;
-    opacity: 0.85;
+    opacity: 0.9;
+    z-index: 1;
   }
 
-  .float-emoji.e1 { top: 12%; left: 10%; animation-delay: 0s; }
-  .float-emoji.e2 { top: 15%; right: 12%; animation-delay: 1s; }
-  .float-emoji.e3 { bottom: 15%; left: 15%; animation-delay: 2s; }
-  .float-emoji.e4 { bottom: 12%; right: 10%; animation-delay: 3s; }
+  .float-emoji.e1 { top: 10%; left: 8%; animation-delay: 0s; animation-duration: 3.5s; }
+  .float-emoji.e2 { top: 8%; right: 8%; animation-delay: 0.8s; animation-duration: 4.2s; }
+  .float-emoji.e3 { bottom: 12%; left: 12%; animation-delay: 1.6s; animation-duration: 3.8s; }
+  .float-emoji.e4 { bottom: 10%; right: 8%; animation-delay: 2.4s; animation-duration: 4.5s; }
 
   @keyframes floatAround {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-8px) rotate(5deg); }
-    50% { transform: translateY(-4px) rotate(-3deg); }
-    75% { transform: translateY(-10px) rotate(3deg); }
+    0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+    25% { transform: translateY(-12px) rotate(8deg) scale(1.1); }
+    50% { transform: translateY(-6px) rotate(-5deg) scale(0.95); }
+    75% { transform: translateY(-14px) rotate(5deg) scale(1.05); }
+  }
+
+  /* Sparkle dots */
+  .fun-illustration .sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite;
+    box-shadow: 0 0 6px 2px rgba(255,215,0,0.6);
+  }
+
+  .sparkle:nth-child(6) { top: 20%; left: 30%; animation-delay: 0.3s; }
+  .sparkle:nth-child(7) { top: 35%; right: 25%; animation-delay: 0.9s; }
+  .sparkle:nth-child(8) { bottom: 25%; left: 40%; animation-delay: 1.5s; }
+  .sparkle:nth-child(9) { top: 50%; right: 35%; animation-delay: 0.6s; }
+  .sparkle:nth-child(10) { bottom: 35%; right: 45%; animation-delay: 1.2s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.5); }
   }
 
   /* ── Placeholder text ── */
@@ -673,7 +722,12 @@
           <div class="float-emoji e2">⭐</div>
           <div class="float-emoji e3">🎨</div>
           <div class="float-emoji e4">📚</div>
-          <div class="illustration-center" id="visual-aid-center">🐱</div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="illustration-center" id="visual-aid-center">🐱🐶</div>
           <div class="illustration-label">Learning is fun!</div>
         </div>
       </div>
@@ -686,6 +740,11 @@
           <div class="float-emoji e2">🌟</div>
           <div class="float-emoji e3">💛</div>
           <div class="float-emoji e4">🎉</div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
+          <div class="sparkle"></div>
           <div class="illustration-center" id="topic-helper-center">🧩</div>
           <div class="illustration-label">You can do it!</div>
         </div>
@@ -774,11 +833,11 @@ function selectTopic(btn) {
 
 function updateIllustrations() {
   const topicVisuals = {
-    'Picture Matching': { center: '🐱🐶', helper: '🧩', emojis: ['🎨','🖼️','🐸','🦋'], label1: 'Match the pictures!', label2: 'Find the pairs!' },
-    'Math Calculation': { center: '🔢', helper: '➕', emojis: ['🍎','🧮','💯','🔟'], label1: 'Count with me!', label2: 'Numbers are fun!' },
-    'English and Sentences': { center: '📖', helper: '✏️', emojis: ['📝','🔤','💬','📚'], label1: 'Read and write!', label2: 'Words are magic!' },
-    'Fun Quiz': { center: '❓', helper: '💡', emojis: ['🏆','🎯','✅','🧠'], label1: 'Quiz time!', label2: 'You are so smart!' },
-    'Daily Living Skills': { center: '🏠', helper: '🌟', emojis: ['🧹','🍽️','👕','🚿'], label1: 'Life skills!', label2: 'You got this!' },
+    'Picture Matching': { center: '🐱🐶🐸', helper: '🧩🎯', emojis: ['🦋','🌺','🐠','🌈'], label1: 'Match the pictures!', label2: 'Find the pairs!' },
+    'Math Calculation': { center: '🔢✨', helper: '🧮🍎', emojis: ['➕','💯','🔟','🎲'], label1: 'Count with me!', label2: 'Numbers are magic!' },
+    'English and Sentences': { center: '📖✏️', helper: '🔤💬', emojis: ['📝','📚','🅰️','💫'], label1: 'Words are fun!', label2: 'Read and shine!' },
+    'Fun Quiz': { center: '🧠💡', helper: '🏆🎯', emojis: ['❓','✅','🎉','🌟'], label1: 'Quiz time!', label2: 'You are brilliant!' },
+    'Daily Living Skills': { center: '🏠💪', helper: '🌟👏', emojis: ['🧹','🍽️','👕','🚿'], label1: 'Life hero!', label2: 'Super skills!' },
   };
   const v = topicVisuals[selectedTopic] || topicVisuals['Picture Matching'];
   
