@@ -75,15 +75,6 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
-        Cors:
-          AllowOrigins:
-            - "*"
-          AllowHeaders:
-            - Content-Type
-          AllowMethods:
-            - POST
-          ExposeHeaders:
-            - Content-Type
 
   WritingPracticeFunction:
     Type: AWS::Serverless::Function
@@ -104,15 +95,6 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
-        Cors:
-          AllowOrigins:
-            - "*"
-          AllowHeaders:
-            - Content-Type
-          AllowMethods:
-            - POST
-          ExposeHeaders:
-            - Content-Type
 
   YourStarBadgeFunction:
     Type: AWS::Serverless::Function
@@ -133,15 +115,6 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
-        Cors:
-          AllowOrigins:
-            - "*"
-          AllowHeaders:
-            - Content-Type
-          AllowMethods:
-            - POST
-          ExposeHeaders:
-            - Content-Type
 
   ParentandTeacherNotesFunction:
     Type: AWS::Serverless::Function
@@ -162,15 +135,6 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
-        Cors:
-          AllowOrigins:
-            - "*"
-          AllowHeaders:
-            - Content-Type
-          AllowMethods:
-            - POST
-          ExposeHeaders:
-            - Content-Type
 
   FriendlyLearningHelperFunction:
     Type: AWS::Serverless::Function
@@ -191,15 +155,6 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
-        Cors:
-          AllowOrigins:
-            - "*"
-          AllowHeaders:
-            - Content-Type
-          AllowMethods:
-            - POST
-          ExposeHeaders:
-            - Content-Type
 
   # ── Image Lambda (buffered, API Gateway) ──────────────────────────────────
   # NOTE: Only POST is registered as a Lambda event. OPTIONS is handled by the
