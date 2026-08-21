@@ -1,0 +1,235 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Learning Steps For Autistic Kids - AI Learning App
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Architectures:
+      - x86_64
+
+Resources:
+
+  # ── IAM Role ──────────────────────────────────────────────────────────────
+  AppBedrockRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LearningStepsBedrockRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: BedrockInvokePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource:
+                  - !Sub arn:aws:bedrock:ap-southeast-1:${AWS::AccountId}:inference-profile/global.anthropic.claude-haiku-4-5-20251001-v1:0-20260217-v1:0
+                  - arn:aws:bedrock:ap-southeast-1::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0-20260217-v1:0
+                  - arn:aws:bedrock:::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0-20260217-v1:0
+                  - arn:aws:bedrock:*::foundation-model/amazon.nova-canvas-v1:0
+
+  # ── API Gateway (image only) ───────────────────────────────────────────────
+  AppApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'POST,OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+
+  # ── Streaming text Lambdas (Lambda Web Adapter + Flask) ───────────────────
+  YourLessonFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: learning-steps-your-lesson
+      CodeUri: ../backend/your_lesson/
+      Handler: run.sh
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt AppBedrockRole.Arn
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:27
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_INVOKE_MODE: response_stream
+          PORT: "8080"
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+
+  WritingPracticeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: learning-steps-writing-practice
+      CodeUri: ../backend/writing_practice/
+      Handler: run.sh
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt AppBedrockRole.Arn
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:27
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_INVOKE_MODE: response_stream
+          PORT: "8080"
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+
+  YourStarBadgeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: learning-steps-your-star-badge
+      CodeUri: ../backend/your_star_badge/
+      Handler: run.sh
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt AppBedrockRole.Arn
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:27
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_INVOKE_MODE: response_stream
+          PORT: "8080"
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+
+  ParentandTeacherNotesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: learning-steps-parent-teacher-notes
+      CodeUri: ../backend/parent_and_teacher_notes/
+      Handler: run.sh
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt AppBedrockRole.Arn
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:27
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_INVOKE_MODE: response_stream
+          PORT: "8080"
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+
+  FriendlyLearningHelperFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: learning-steps-friendly-helper
+      CodeUri: ../backend/friendly_learning_helper/
+      Handler: run.sh
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt AppBedrockRole.Arn
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:27
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/bootstrap
+          AWS_LWA_INVOKE_MODE: response_stream
+          PORT: "8080"
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+
+  # ── Image Lambda (buffered, API Gateway) ──────────────────────────────────
+  ImageGeneratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: learning-steps-image-generator
+      CodeUri: ../backend/image_generator/
+      Handler: app.handler
+      Timeout: 30
+      MemorySize: 512
+      Role: !GetAtt AppBedrockRole.Arn
+      Events:
+        ImageApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AppApi
+            Path: /image
+            Method: POST
+        ImageApiOptions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AppApi
+            Path: /image
+            Method: OPTIONS
+
+  # ── S3 Frontend Bucket ────────────────────────────────────────────────────
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub learning-steps-autistic-kids-${AWS::AccountId}
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  FrontendBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action: s3:GetObject
+            Resource: !Sub arn:aws:s3:::${FrontendBucket}/*
+
+# ── Outputs ────────────────────────────────────────────────────────────────
+Outputs:
+  DiagramApiUrl:
+    Description: Image API endpoint
+    Value: !Sub https://${AppApi}.execute-api.${AWS::Region}.amazonaws.com/prod
+
+  YourLessonUrl:
+    Description: Your Lesson streaming function URL
+    Value: !GetAtt YourLessonFunctionUrl.FunctionUrl
+
+  WritingPracticeUrl:
+    Description: Writing Practice streaming function URL
+    Value: !GetAtt WritingPracticeFunctionUrl.FunctionUrl
+
+  YourStarBadgeUrl:
+    Description: Your Star Badge streaming function URL
+    Value: !GetAtt YourStarBadgeFunctionUrl.FunctionUrl
+
+  ParentandTeacherNotesUrl:
+    Description: Parent and Teacher Notes streaming function URL
+    Value: !GetAtt ParentandTeacherNotesFunctionUrl.FunctionUrl
+
+  FriendlyLearningHelperUrl:
+    Description: Friendly Learning Helper streaming function URL
+    Value: !GetAtt FriendlyLearningHelperFunctionUrl.FunctionUrl
+
+  WebsiteUrl:
+    Description: S3 static website URL
+    Value: !GetAtt FrontendBucket.WebsiteURL
+
+  BucketName:
+    Description: Frontend S3 bucket name
+    Value: !Ref FrontendBucket
