@@ -3,7 +3,7 @@ import random
 import boto3
 
 BEDROCK = boto3.client("bedrock-runtime", region_name="us-east-1")
-IMAGE_MODEL_ID = "amazon.nova-canvas-v1:0"
+IMAGE_MODEL_ID = "amazon.titan-image-generator-v2:0"
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
@@ -49,6 +49,7 @@ def handler(event, context):
 
     seed = random.randint(0, 2147483647)
 
+    # Titan Image Generator v2 request format
     request_body = {
         "taskType": "TEXT_IMAGE",
         "textToImageParams": {
