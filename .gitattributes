@@ -1,0 +1,2 @@
+# Force LF line endings for shell scripts (Lambda Linux runtime requires it)
+*.sh text eol=lf
