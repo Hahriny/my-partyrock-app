@@ -90,5 +90,5 @@ def handler(event, context):
         return {
             "statusCode": 500,
             "headers": CORS_HEADERS,
-            "body": json.dumps({"error": str(e)}),
+            "body": json.dumps({"error": str(e), "model": IMAGE_MODEL_ID, "region": "us-east-1"}),
         }

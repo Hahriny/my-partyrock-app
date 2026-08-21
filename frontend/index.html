@@ -764,7 +764,8 @@ async function streamToPanel(url, body, panelEl, onChunk) {
     });
 
     if (!resp.ok) {
-      throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+      const errBody = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${errBody.slice(0, 200)}`);
     }
 
     panelEl.innerHTML = '';   // remove spinner
@@ -844,7 +845,10 @@ async function generateImage(panelEl, imageType) {
       body:    JSON.stringify({ topic, image_type: imageType }),
     });
 
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    if (!resp.ok) {
+      const errBody = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${errBody.slice(0, 200)}`);
+    }
     const data = await resp.json();
 
     panelEl.innerHTML = '';
