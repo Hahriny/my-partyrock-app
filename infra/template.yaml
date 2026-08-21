@@ -74,6 +74,15 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - Content-Type
+          AllowMethods:
+            - POST
+          ExposeHeaders:
+            - Content-Type
 
   WritingPracticeFunction:
     Type: AWS::Serverless::Function
@@ -94,6 +103,15 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - Content-Type
+          AllowMethods:
+            - POST
+          ExposeHeaders:
+            - Content-Type
 
   YourStarBadgeFunction:
     Type: AWS::Serverless::Function
@@ -114,6 +132,15 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - Content-Type
+          AllowMethods:
+            - POST
+          ExposeHeaders:
+            - Content-Type
 
   ParentandTeacherNotesFunction:
     Type: AWS::Serverless::Function
@@ -134,6 +161,15 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - Content-Type
+          AllowMethods:
+            - POST
+          ExposeHeaders:
+            - Content-Type
 
   FriendlyLearningHelperFunction:
     Type: AWS::Serverless::Function
@@ -154,6 +190,15 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - Content-Type
+          AllowMethods:
+            - POST
+          ExposeHeaders:
+            - Content-Type
 
   # ── Image Lambda (buffered, API Gateway) ──────────────────────────────────
   # NOTE: Only POST is registered as a Lambda event. OPTIONS is handled by the
@@ -177,54 +222,15 @@ Resources:
             Method: POST
 
   # ── CloudFront Response Headers Policy ───────────────────────────────────
-  CorsResponseHeadersPolicy:
-    Type: AWS::CloudFront::ResponseHeadersPolicy
-    Properties:
-      ResponseHeadersPolicyConfig:
-        Name: LearningStepsCorsPolicy
-        CorsConfig:
-          AccessControlAllowCredentials: false
-          AccessControlAllowHeaders:
-            Items:
-              - Content-Type
-          AccessControlAllowMethods:
-            Items:
-              - POST
-              - OPTIONS
-          AccessControlAllowOrigins:
-            Items:
-              - "*"
-          OriginOverride: true
+  # REMOVED: Deploy IAM role lacks cloudfront:* permissions.
+  # CORS is handled by Flask OPTIONS routes in each streaming Lambda.
+  # The FunctionUrlConfig.Cors block is re-added to handle preflight at the
+  # Lambda URL layer for RESPONSE_STREAM functions.
 
   # ── CloudFront Distribution (serves S3 frontend over HTTPS) ──────────────
-  FrontendDistribution:
-    Type: AWS::CloudFront::Distribution
-    Properties:
-      DistributionConfig:
-        Enabled: true
-        DefaultRootObject: index.html
-        Origins:
-          - Id: S3WebsiteOrigin
-            DomainName: !Sub learning-steps-autistic-kids-${AWS::AccountId}.s3-website-${AWS::Region}.amazonaws.com
-            CustomOriginConfig:
-              HTTPPort: 80
-              OriginProtocolPolicy: http-only
-        DefaultCacheBehavior:
-          TargetOriginId: S3WebsiteOrigin
-          ViewerProtocolPolicy: redirect-to-https
-          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
-          ResponseHeadersPolicyId: !Ref CorsResponseHeadersPolicy
-          AllowedMethods:
-            - GET
-            - HEAD
-            - OPTIONS
-        CustomErrorResponses:
-          - ErrorCode: 403
-            ResponseCode: 200
-            ResponsePagePath: /index.html
-          - ErrorCode: 404
-            ResponseCode: 200
-            ResponsePagePath: /index.html
+  # REMOVED: Deploy IAM role lacks cloudfront:* permissions.
+  # S3 website (http) calling https Lambda URLs is NOT mixed content.
+  # Mixed content only blocks https→http, not http→https.
 
   # ── S3 Frontend Bucket ────────────────────────────────────────────────────
   FrontendBucket:
@@ -279,8 +285,8 @@ Outputs:
     Value: !GetAtt FriendlyLearningHelperFunctionUrl.FunctionUrl
 
   WebsiteUrl:
-    Description: CloudFront HTTPS URL for the frontend
-    Value: !Sub https://${FrontendDistribution.DomainName}
+    Description: S3 static website URL
+    Value: !GetAtt FrontendBucket.WebsiteURL
 
   BucketName:
     Description: Frontend S3 bucket name
