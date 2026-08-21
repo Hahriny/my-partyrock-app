@@ -97,26 +97,85 @@
 
   /* ── Welcome banner (Widget 13 — shown first) ── */
   .welcome-banner {
-    background: linear-gradient(135deg, #fff176, #ffcc02, #ffe082);
-    border-radius: 20px;
-    padding: 28px 26px;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #fdfcfb 50%, #a8edea 75%, #fed6e3 100%);
+    background-size: 300% 300%;
+    animation: welcomeBg 8s ease infinite;
+    border-radius: 28px;
+    padding: 36px 30px 28px;
     margin-bottom: 28px;
     text-align: center;
-    box-shadow: 0 6px 24px rgba(255,193,7,0.25);
-    border: 3px solid #ffca28;
+    box-shadow: 0 8px 32px rgba(255,105,180,0.2), 0 2px 8px rgba(0,0,0,0.05);
+    border: 3px solid rgba(255,255,255,0.8);
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes welcomeBg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+    animation: shimmer 6s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .welcome-banner h2 {
-    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-    color: #e65100;
-    margin-bottom: 10px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: #d81b60;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+    position: relative;
   }
 
   .welcome-banner p {
     font-size: clamp(0.95rem, 2.5vw, 1.1rem);
     color: #4a148c;
-    line-height: 1.6;
+    line-height: 1.8;
+    position: relative;
+  }
+
+  .welcome-characters {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 18px 0;
+    position: relative;
+  }
+
+  .welcome-char {
+    font-size: 2.5rem;
+    display: inline-block;
+    animation: charBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1));
+  }
+
+  .welcome-char.c1 { animation-delay: 0s; }
+  .welcome-char.c2 { animation-delay: 0.3s; }
+  .welcome-char.c3 { animation-delay: 0.6s; }
+  .welcome-char.c4 { animation-delay: 0.9s; }
+  .welcome-char.c5 { animation-delay: 1.2s; }
+
+  @keyframes charBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-14px) scale(1.15); }
+    60% { transform: translateY(-6px) scale(1.05); }
+  }
+
+  .welcome-affirmation {
+    margin-top: 8px;
+    font-size: 1.1rem;
+    color: #e65100;
+    font-weight: 700;
+    position: relative;
   }
 
   /* ── Form controls ── */
@@ -635,8 +694,18 @@
   <div class="welcome-banner">
     <h2>🌟 Welcome to Your Happy Learning Space! 🌟</h2>
     <p>
-      This app is made just for <strong>YOU!</strong> 💛 Pick how you feel, tell us your name and age,
-      choose a fun topic, and let's learn together step by step.<br>
+      This app is made just for <strong>YOU!</strong> 💛<br>
+      Pick how you feel, tell us your name and age, choose a fun topic,<br>
+      and let's learn together step by step! 🚀✨
+    </p>
+    <div class="welcome-characters">
+      <span class="welcome-char c1">🐻</span>
+      <span class="welcome-char c2">🌈</span>
+      <span class="welcome-char c3">🦄</span>
+      <span class="welcome-char c4">🐝</span>
+      <span class="welcome-char c5">🌻</span>
+    </div>
+    <p class="welcome-affirmation">
       You are <strong>brave</strong>, you are <strong>smart</strong>, and you are <strong>amazing!</strong> 🐾⭐
     </p>
   </div>
