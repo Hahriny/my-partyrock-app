@@ -50,7 +50,6 @@ Always keep the tone warm, patient, and celebratory."""
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 1024,
         "temperature": 0.3,
-        "top_p": 1,
         "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
     }
 

@@ -47,7 +47,6 @@ For ages 11–19: Fun but slightly more mature, like a real achievement certific
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 1024,
         "temperature": 0.7,
-        "top_p": 1,
         "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
     }
 

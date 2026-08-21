@@ -106,7 +106,6 @@ Always end with:
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 2048,
         "temperature": 0,
-        "top_p": 1,
         "messages": [{"role": "user", "content": content}],
     }
 
