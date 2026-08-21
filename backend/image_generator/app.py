@@ -76,9 +76,9 @@ def handler(event, context):
         images = result.get("images", [])
         if not images:
             return {
-                "statusCode": 500,
-                "headers": CORS_HEADERS,
-                "body": json.dumps({"error": "No images returned from Bedrock"}),
+                "statusCode": 200,
+                "headers": {**CORS_HEADERS, "Content-Type": "application/json"},
+                "body": json.dumps({"image_b64": None, "placeholder": True, "message": "Image generation unavailable"}),
             }
 
         return {
@@ -87,8 +87,9 @@ def handler(event, context):
             "body": json.dumps({"image_b64": images[0]}),
         }
     except Exception as e:
+        # Return a successful response with error info so the app doesn't break
         return {
-            "statusCode": 500,
-            "headers": CORS_HEADERS,
-            "body": json.dumps({"error": str(e), "model": IMAGE_MODEL_ID, "region": "us-east-1"}),
+            "statusCode": 200,
+            "headers": {**CORS_HEADERS, "Content-Type": "application/json"},
+            "body": json.dumps({"image_b64": None, "placeholder": True, "message": f"Image generation unavailable: {str(e)[:150]}"}),
         }

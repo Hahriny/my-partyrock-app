@@ -852,11 +852,15 @@ async function generateImage(panelEl, imageType) {
     const data = await resp.json();
 
     panelEl.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = `data:image/png;base64,${data.image_b64}`;
-    img.className = 'gen-image';
-    img.alt = `${imageType === 'topic_helper' ? 'Topic Helper' : 'Lesson Visual Aid'} for ${topic}`;
-    panelEl.appendChild(img);
+    if (data.placeholder || !data.image_b64) {
+      panelEl.innerHTML = `<div class="placeholder-text">🎨 Image generation is temporarily unavailable.<br>${data.message || ''}</div>`;
+    } else {
+      const img = document.createElement('img');
+      img.src = `data:image/png;base64,${data.image_b64}`;
+      img.className = 'gen-image';
+      img.alt = `${imageType === 'topic_helper' ? 'Topic Helper' : 'Lesson Visual Aid'} for ${topic}`;
+      panelEl.appendChild(img);
+    }
 
   } catch (err) {
     panelEl.innerHTML = `<div class="error-msg">❌ Could not load image: ${err.message}</div>`;
