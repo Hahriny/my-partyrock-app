@@ -487,6 +487,60 @@
     letter-spacing: 4px;
   }
 
+  /* ── Fun Illustration Cards ── */
+  .fun-illustration {
+    position: relative;
+    height: 220px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fff9c4, #f8bbd0, #b3e5fc, #c8e6c9);
+    background-size: 400% 400%;
+    animation: bgShift 8s ease infinite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .illustration-center {
+    font-size: 4.5rem;
+    animation: bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-12px) scale(1.1); }
+  }
+
+  .illustration-label {
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #4a148c;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+  }
+
+  .float-emoji {
+    position: absolute;
+    font-size: 1.8rem;
+    animation: floatAround 4s ease-in-out infinite;
+    opacity: 0.85;
+  }
+
+  .float-emoji.e1 { top: 12%; left: 10%; animation-delay: 0s; }
+  .float-emoji.e2 { top: 15%; right: 12%; animation-delay: 1s; }
+  .float-emoji.e3 { bottom: 15%; left: 15%; animation-delay: 2s; }
+  .float-emoji.e4 { bottom: 12%; right: 10%; animation-delay: 3s; }
+
+  @keyframes floatAround {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(5deg); }
+    50% { transform: translateY(-4px) rotate(-3deg); }
+    75% { transform: translateY(-10px) rotate(3deg); }
+  }
+
   /* ── Placeholder text ── */
   .placeholder-text { color: #bbb; font-style: italic; padding: 20px; text-align: center; }
 </style>
@@ -609,27 +663,35 @@
     </div>
   </div>
 
-  <!-- ═══ WIDGETS 8 & 9 — Images (hidden - no image model available) ═══ -->
-  <!--
+  <!-- ═══ WIDGETS 8 & 9 — Fun Illustration Cards ═══ -->
   <div class="image-row">
     <div class="widget">
-      <div class="widget-header"><span class="icon">✨</span> Lesson Visual Aid</div>
+      <div class="widget-header"><span class="icon">🎨</span> Lesson Visual Aid</div>
       <div class="widget-body">
-        <div class="output-panel image-panel" id="panel-visual-aid">
-          <span class="placeholder-text">Your colorful picture will appear here! 🌈🎨</span>
+        <div class="fun-illustration" id="illustration-visual-aid">
+          <div class="float-emoji e1">🌈</div>
+          <div class="float-emoji e2">⭐</div>
+          <div class="float-emoji e3">🎨</div>
+          <div class="float-emoji e4">📚</div>
+          <div class="illustration-center" id="visual-aid-center">🐱</div>
+          <div class="illustration-label">Learning is fun!</div>
         </div>
       </div>
     </div>
     <div class="widget">
-      <div class="widget-header"><span class="icon">✨</span> Topic Helper Image</div>
+      <div class="widget-header"><span class="icon">🖼️</span> Topic Helper Image</div>
       <div class="widget-body">
-        <div class="output-panel image-panel" id="panel-topic-helper">
-          <span class="placeholder-text">A fun topic picture will appear here! 🖼️⭐</span>
+        <div class="fun-illustration" id="illustration-topic-helper">
+          <div class="float-emoji e1">✨</div>
+          <div class="float-emoji e2">🌟</div>
+          <div class="float-emoji e3">💛</div>
+          <div class="float-emoji e4">🎉</div>
+          <div class="illustration-center" id="topic-helper-center">🧩</div>
+          <div class="illustration-label">You can do it!</div>
         </div>
       </div>
     </div>
   </div>
-  -->
 
   <!-- ═══ WIDGET 10 — Friendly Learning Helper (Chat) ═══ -->
   <div class="widget">
@@ -707,6 +769,34 @@ function selectTopic(btn) {
   document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   selectedTopic = btn.dataset.topic;
+  updateIllustrations();
+}
+
+function updateIllustrations() {
+  const topicVisuals = {
+    'Picture Matching': { center: '🐱🐶', helper: '🧩', emojis: ['🎨','🖼️','🐸','🦋'], label1: 'Match the pictures!', label2: 'Find the pairs!' },
+    'Math Calculation': { center: '🔢', helper: '➕', emojis: ['🍎','🧮','💯','🔟'], label1: 'Count with me!', label2: 'Numbers are fun!' },
+    'English and Sentences': { center: '📖', helper: '✏️', emojis: ['📝','🔤','💬','📚'], label1: 'Read and write!', label2: 'Words are magic!' },
+    'Fun Quiz': { center: '❓', helper: '💡', emojis: ['🏆','🎯','✅','🧠'], label1: 'Quiz time!', label2: 'You are so smart!' },
+    'Daily Living Skills': { center: '🏠', helper: '🌟', emojis: ['🧹','🍽️','👕','🚿'], label1: 'Life skills!', label2: 'You got this!' },
+  };
+  const v = topicVisuals[selectedTopic] || topicVisuals['Picture Matching'];
+  
+  const vc = document.getElementById('visual-aid-center');
+  const tc = document.getElementById('topic-helper-center');
+  if (vc) vc.textContent = v.center;
+  if (tc) tc.textContent = v.helper;
+
+  const ill1 = document.getElementById('illustration-visual-aid');
+  const ill2 = document.getElementById('illustration-topic-helper');
+  if (ill1) {
+    ill1.querySelectorAll('.float-emoji').forEach((el, i) => el.textContent = v.emojis[i] || '⭐');
+    ill1.querySelector('.illustration-label').textContent = v.label1;
+  }
+  if (ill2) {
+    ill2.querySelectorAll('.float-emoji').forEach((el, i) => el.textContent = v.emojis[i] || '✨');
+    ill2.querySelector('.illustration-label').textContent = v.label2;
+  }
 }
 
 function updateAge(val) {
