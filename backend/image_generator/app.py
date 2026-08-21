@@ -2,7 +2,7 @@ import json
 import random
 import boto3
 
-BEDROCK = boto3.client("bedrock-runtime", region_name="ap-southeast-1")
+BEDROCK = boto3.client("bedrock-runtime", region_name="us-east-1")
 IMAGE_MODEL_ID = "amazon.nova-canvas-v1:0"
 
 CORS_HEADERS = {
