@@ -5,7 +5,7 @@ from flask import Flask, request, Response, stream_with_context
 app = Flask(__name__)
 
 BEDROCK = boto3.client("bedrock-runtime", region_name="ap-southeast-1")
-MODEL_ID = "ap-southeast-1.anthropic.claude-haiku-4-5-20251001-v1:0"
+MODEL_ID = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
