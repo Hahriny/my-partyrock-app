@@ -52,20 +52,23 @@ For ages 11–19: Fun but slightly more mature, like a real achievement certific
     }
 
     def generate():
-        response = BEDROCK.invoke_model_with_response_stream(
-            modelId=MODEL_ID,
-            body=json.dumps(body),
-            contentType="application/json",
-            accept="application/json",
-        )
-        for event in response["body"]:
-            chunk = event.get("chunk")
-            if chunk:
-                chunk_data = json.loads(chunk["bytes"].decode())
-                if chunk_data.get("type") == "content_block_delta":
-                    delta = chunk_data.get("delta", {})
-                    if delta.get("type") == "text_delta":
-                        yield delta.get("text", "")
+        try:
+            response = BEDROCK.invoke_model_with_response_stream(
+                modelId=MODEL_ID,
+                body=json.dumps(body),
+                contentType="application/json",
+                accept="application/json",
+            )
+            for event in response["body"]:
+                chunk = event.get("chunk")
+                if chunk:
+                    chunk_data = json.loads(chunk["bytes"].decode())
+                    if chunk_data.get("type") == "content_block_delta":
+                        delta = chunk_data.get("delta", {})
+                        if delta.get("type") == "text_delta":
+                            yield delta.get("text", "")
+        except Exception as e:
+            yield f"\n\n❌ ERROR: {str(e)}"
 
     headers = dict(CORS_HEADERS)
     headers["X-Accel-Buffering"] = "no"
