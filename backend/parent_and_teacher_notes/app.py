@@ -7,16 +7,7 @@ app = Flask(__name__)
 BEDROCK = boto3.client("bedrock-runtime", region_name="ap-southeast-1")
 MODEL_ID = "anthropic.claude-haiku-4-5-20251001-v1:0"
 
-CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "POST,OPTIONS",
-}
-
-
-@app.route("/", methods=["OPTIONS"])
-def options():
-    return Response("", status=200, headers=CORS_HEADERS)
+CORS_HEADERS = {}
 
 
 @app.route("/", methods=["POST"])
