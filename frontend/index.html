@@ -609,7 +609,8 @@
     </div>
   </div>
 
-  <!-- ═══ WIDGETS 8 & 9 — Images (side by side) ═══ -->
+  <!-- ═══ WIDGETS 8 & 9 — Images (hidden - no image model available) ═══ -->
+  <!--
   <div class="image-row">
     <div class="widget">
       <div class="widget-header"><span class="icon">✨</span> Lesson Visual Aid</div>
@@ -628,6 +629,7 @@
       </div>
     </div>
   </div>
+  -->
 
   <!-- ═══ WIDGET 10 — Friendly Learning Helper (Chat) ═══ -->
   <div class="widget">
@@ -910,8 +912,6 @@ async function runAll() {
       sharedInputs,
       document.getElementById('panel-parent')
     ),
-    generateImage(document.getElementById('panel-visual-aid'),   'visual_aid'),
-    generateImage(document.getElementById('panel-topic-helper'), 'topic_helper'),
   ];
 
   await Promise.allSettled(promises);
