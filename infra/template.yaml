@@ -37,7 +37,7 @@ Resources:
                   - !Sub arn:aws:bedrock:ap-southeast-1:${AWS::AccountId}:inference-profile/global.anthropic.claude-haiku-4-5-20251001-v1:0-20260217-v1:0
                   - arn:aws:bedrock:ap-southeast-1::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0-20260217-v1:0
                   - arn:aws:bedrock:::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0-20260217-v1:0
-                  - arn:aws:bedrock:*::foundation-model/amazon.nova-canvas-v1:0
+                  - arn:aws:bedrock:ap-southeast-1::foundation-model/amazon.nova-canvas-v1:0
 
   # ── API Gateway (image only) ───────────────────────────────────────────────
   AppApi:
@@ -69,6 +69,17 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+          ExposeHeaders:
+            - "Content-Type"
+          MaxAge: 600
 
   WritingPracticeFunction:
     Type: AWS::Serverless::Function
@@ -89,6 +100,17 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+          ExposeHeaders:
+            - "Content-Type"
+          MaxAge: 600
 
   YourStarBadgeFunction:
     Type: AWS::Serverless::Function
@@ -109,6 +131,17 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+          ExposeHeaders:
+            - "Content-Type"
+          MaxAge: 600
 
   ParentandTeacherNotesFunction:
     Type: AWS::Serverless::Function
@@ -129,6 +162,17 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+          ExposeHeaders:
+            - "Content-Type"
+          MaxAge: 600
 
   FriendlyLearningHelperFunction:
     Type: AWS::Serverless::Function
@@ -149,6 +193,17 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+          ExposeHeaders:
+            - "Content-Type"
+          MaxAge: 600
 
   # ── Image Lambda (buffered, API Gateway) ──────────────────────────────────
   ImageGeneratorFunction:
@@ -157,7 +212,7 @@ Resources:
       FunctionName: learning-steps-image-generator
       CodeUri: ../backend/image_generator/
       Handler: app.handler
-      Timeout: 30
+      Timeout: 60
       MemorySize: 512
       Role: !GetAtt AppBedrockRole.Arn
       Events:
