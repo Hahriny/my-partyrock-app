@@ -529,6 +529,21 @@
   .chat-send-btn:hover { transform: scale(1.04); }
   .chat-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+  .chat-clear-btn {
+    background: linear-gradient(135deg, #ef5350, #ff7043);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s;
+    white-space: nowrap;
+  }
+
+  .chat-clear-btn:hover { transform: scale(1.04); }
+
   /* ── Two-column input row ── */
   .two-col {
     display: grid;
@@ -866,6 +881,7 @@
             placeholder="Type a question or say hi! I am here to help you 😊"
             onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); sendChat(); }" />
           <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">Send 💬</button>
+          <button class="chat-clear-btn" onclick="clearChat()">Clear 🗑️</button>
         </div>
       </div>
     </div>
@@ -913,6 +929,7 @@ let selectedMood  = 'Happy';
 let selectedTopic = 'Picture Matching';
 let chatHistory   = [];
 let lessonText    = '';   // accumulated lesson for chat context
+let sessionId     = crypto.randomUUID();  // unique session for DynamoDB chat history
 
 function selectMood(btn) {
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
@@ -1206,6 +1223,12 @@ function renderChatWelcome() {
   </div>`;
 }
 
+function clearChat() {
+  chatHistory = [];
+  sessionId = crypto.randomUUID();  // new session
+  renderChatWelcome();
+}
+
 async function sendChat() {
   const input = document.getElementById('chatInput');
   const sendBtn = document.getElementById('chatSendBtn');
@@ -1247,6 +1270,7 @@ async function sendChat() {
     lesson: lessonText.slice(0, 1500),  // truncate to keep payload small
     history: chatHistory,
     message,
+    session_id: sessionId,
   };
 
   try {
