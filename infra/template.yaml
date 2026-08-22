@@ -34,6 +34,16 @@ Resources:
                   - bedrock:InvokeModel
                   - bedrock:InvokeModelWithResponseStream
                 Resource: "*"
+        - PolicyName: DynamoDBChatHistory
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                Resource: !GetAtt ChatSessionsTable.Arn
 
   # ── API Gateway (image only) ───────────────────────────────────────────────
   AppApi:
@@ -181,6 +191,22 @@ Resources:
   # REMOVED: Deploy IAM role lacks cloudfront:* permissions.
   # S3 website (http) calling https Lambda URLs is NOT mixed content.
   # Mixed content only blocks https→http, not http→https.
+
+  # ── DynamoDB Table (chat session history) ──────────────────────────────────
+  ChatSessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: friendlylearninghelper
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: session_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: session_id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # ── S3 Frontend Bucket ────────────────────────────────────────────────────
   FrontendBucket:

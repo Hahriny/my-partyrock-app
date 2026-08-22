@@ -1,17 +1,47 @@
 import json
+import time
+import uuid
 import boto3
 from flask import Flask, request, Response, stream_with_context
 
 app = Flask(__name__)
 
 BEDROCK = boto3.client("bedrock-runtime", region_name="us-east-1")
+DYNAMODB = boto3.resource("dynamodb", region_name="ap-southeast-1")
+TABLE = DYNAMODB.Table("friendlylearninghelper")
+
 MODEL_ID = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+TTL_SECONDS = 24 * 60 * 60  # 24 hours
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST,OPTIONS",
 }
+
+
+def get_session_history(session_id):
+    """Retrieve conversation history from DynamoDB."""
+    try:
+        response = TABLE.get_item(Key={"session_id": session_id})
+        item = response.get("Item")
+        if item:
+            return item.get("history", [])
+    except Exception:
+        pass
+    return []
+
+
+def save_session_history(session_id, history):
+    """Store conversation history to DynamoDB with 24-hour TTL."""
+    ttl = int(time.time()) + TTL_SECONDS
+    TABLE.put_item(
+        Item={
+            "session_id": session_id,
+            "history": history,
+            "ttl": ttl,
+        }
+    )
 
 
 @app.route("/", methods=["OPTIONS"])
@@ -27,8 +57,15 @@ def chat():
     mood = data.get("mood", "Happy")
     topic = data.get("topic", "Picture Matching")
     lesson_text = data.get("lesson", "")
-    history = data.get("history", [])   # [{role, content}]
     message = data.get("message", "")
+
+    # Get or create session ID
+    session_id = data.get("session_id", "")
+    if not session_id:
+        session_id = str(uuid.uuid4())
+
+    # Retrieve history from DynamoDB
+    history = get_session_history(session_id)
 
     system_prompt = (
         f"You are a kind, friendly, and patient learning helper for an autistic child. "
@@ -41,7 +78,7 @@ def chat():
         "If the child seems confused, explain gently again in an even simpler way."
     )
 
-    # Build messages: history + new user message
+    # Build messages from stored history + new user message
     messages = []
     for turn in history:
         role = turn.get("role", "user")
@@ -58,6 +95,8 @@ def chat():
         "messages": messages,
     }
 
+    full_reply = []
+
     def generate():
         try:
             response = BEDROCK.invoke_model_with_response_stream(
@@ -73,13 +112,32 @@ def chat():
                     if chunk_data.get("type") == "content_block_delta":
                         delta = chunk_data.get("delta", {})
                         if delta.get("type") == "text_delta":
-                            yield delta.get("text", "")
+                            text = delta.get("text", "")
+                            full_reply.append(text)
+                            yield text
         except Exception as e:
             yield f"\n\n❌ ERROR: {str(e)}"
 
+    def stream_and_save():
+        for chunk in generate():
+            yield chunk
+
+        # After streaming completes, save history to DynamoDB
+        assistant_message = "".join(full_reply)
+        if assistant_message:
+            history.append({"role": "user", "content": message})
+            history.append({"role": "assistant", "content": assistant_message})
+            # Keep last 20 turns to avoid oversized items
+            trimmed = history[-20:]
+            try:
+                save_session_history(session_id, trimmed)
+            except Exception:
+                pass
+
     headers = dict(CORS_HEADERS)
     headers["X-Accel-Buffering"] = "no"
-    return Response(stream_with_context(generate()),
+    headers["X-Session-Id"] = session_id
+    return Response(stream_with_context(stream_and_save()),
                     content_type="text/plain; charset=utf-8",
                     headers=headers)
 
