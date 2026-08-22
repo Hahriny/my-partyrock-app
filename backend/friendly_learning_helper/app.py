@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 BEDROCK = boto3.client("bedrock-runtime", region_name="us-east-1")
 DYNAMODB = boto3.resource("dynamodb", region_name="ap-southeast-1")
-TABLE = DYNAMODB.Table("friendlylearninghelper")
+TABLE = DYNAMODB.Table("learning-steps-chat-sessions")
 
 MODEL_ID = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
 TTL_SECONDS = 24 * 60 * 60  # 24 hours
