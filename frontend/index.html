@@ -45,20 +45,10 @@
 
   .app-header h1 {
     font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     letter-spacing: 1px;
     font-weight: 900;
-    background: linear-gradient(90deg, #fff, #ffd54f, #f48fb1, #ce93d8, #90caf9, #80cbc4, #a5d6a7, #fff);
-    background-size: 400% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: titleColorFlow 8s linear infinite;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-  }
-
-  @keyframes titleColorFlow {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 400% 50%; }
   }
 
   .app-header p {
