@@ -10,7 +10,7 @@
 
   body {
     font-family: 'Segoe UI', 'Comic Sans MS', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(160deg, #f0f4ff 0%, #fef6ff 30%, #f0fff4 60%, #fffef0 100%);
+    background: linear-gradient(160deg, #fafafe 0%, #f5f0ff 30%, #f0faf7 60%, #fef9f0 100%);
     min-height: 100vh;
     color: #2d2d2d;
   }
@@ -28,10 +28,20 @@
 
   .app-header h1 {
     font-size: clamp(1.4rem, 4vw, 2.2rem);
-    color: #fff;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     letter-spacing: 1px;
     font-weight: 900;
+    background: linear-gradient(90deg, #ffffff, #e8d5f5, #d5e8f5, #d5f5e8, #f5e8d5, #ffffff);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: softTitleFlow 12s ease infinite;
+  }
+
+  @keyframes softTitleFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .app-header p {
@@ -50,43 +60,44 @@
 
   /* ── Widget card ── */
   .widget {
-    border-radius: 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    margin-bottom: 24px;
+    border-radius: 24px;
+    box-shadow: 0 2px 16px rgba(108,99,255,0.06), 0 1px 4px rgba(0,0,0,0.04);
+    margin-bottom: 28px;
     overflow: hidden;
-    border: 1px solid rgba(108,99,255,0.1);
+    border: 1.5px solid rgba(108,99,255,0.08);
     transition: box-shadow 0.3s, transform 0.2s;
   }
 
   .widget:hover {
-    box-shadow: 0 6px 24px rgba(108,99,255,0.12);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(108,99,255,0.1), 0 2px 8px rgba(0,0,0,0.06);
+    transform: translateY(-3px);
   }
 
-  /* Soft uniform pastels for each widget */
-  .widget:nth-child(1) { background: #fef7ff; }
-  .widget:nth-child(2) { background: #f4fef4; }
-  .widget:nth-child(3) { background: #f4f8fe; }
-  .widget:nth-child(4) { background: #fefcf4; }
-  .widget:nth-child(5) { background: #fdf4fe; }
-  .widget:nth-child(6) { background: #f4fefe; }
-  .widget:nth-child(7) { background: #fef8f4; }
-  .widget:nth-child(8) { background: #fefef4; }
-  .widget:nth-child(9) { background: #f7f4fe; }
-  .widget:nth-child(10) { background: #f4f6fe; }
-  .widget:nth-child(11) { background: #fefdf4; }
-  .widget:nth-child(12) { background: #f4fefc; }
+  /* Elegant soft tinted backgrounds */
+  .widget:nth-child(1) { background: linear-gradient(160deg, #fff 0%, #fef7ff 100%); }
+  .widget:nth-child(2) { background: linear-gradient(160deg, #fff 0%, #f4fef7 100%); }
+  .widget:nth-child(3) { background: linear-gradient(160deg, #fff 0%, #f4f8fe 100%); }
+  .widget:nth-child(4) { background: linear-gradient(160deg, #fff 0%, #fffcf4 100%); }
+  .widget:nth-child(5) { background: linear-gradient(160deg, #fff 0%, #fdf4fe 100%); }
+  .widget:nth-child(6) { background: linear-gradient(160deg, #fff 0%, #f4fdfe 100%); }
+  .widget:nth-child(7) { background: linear-gradient(160deg, #fff 0%, #fef8f4 100%); }
+  .widget:nth-child(8) { background: linear-gradient(160deg, #fff 0%, #fefef4 100%); }
+  .widget:nth-child(9) { background: linear-gradient(160deg, #fff 0%, #f7f4fe 100%); }
+  .widget:nth-child(10) { background: linear-gradient(160deg, #fff 0%, #f4f6fe 100%); }
+  .widget:nth-child(11) { background: linear-gradient(160deg, #fff 0%, #fefdf4 100%); }
+  .widget:nth-child(12) { background: linear-gradient(160deg, #fff 0%, #f4fefc 100%); }
 
   .widget-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 18px;
-    background: linear-gradient(90deg, #6c63ff, #a855f7);
+    padding: 14px 20px;
+    background: linear-gradient(90deg, #6c63ff, #9b7cf7);
     font-weight: 700;
     font-size: 1rem;
     color: #fff;
     letter-spacing: 0.3px;
+    border-radius: 24px 24px 0 0;
   }
 
   .widget-header .icon { font-size: 1.2rem; }
