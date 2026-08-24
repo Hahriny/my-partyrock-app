@@ -49,6 +49,18 @@
     text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
     letter-spacing: 1px;
     font-weight: 900;
+    background: linear-gradient(90deg, #fff, #fff9c4, #f8bbd0, #b3e5fc, #c8e6c9, #fff);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleColorFlow 5s ease infinite;
+  }
+
+  @keyframes titleColorFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .app-header p {
@@ -67,7 +79,6 @@
 
   /* ── Widget card ── */
   .widget {
-    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,245,200,0.7));
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.10);
     margin-bottom: 24px;
@@ -81,17 +92,19 @@
     box-shadow: 0 6px 28px rgba(255,167,38,0.18);
   }
 
-  .widget:nth-child(odd) {
-    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(225,245,254,0.7));
-  }
-
-  .widget:nth-child(3n) {
-    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(243,229,245,0.7));
-  }
-
-  .widget:nth-child(4n) {
-    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(232,245,233,0.7));
-  }
+  /* Each widget gets a unique permanent color */
+  .widget:nth-child(1) { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+  .widget:nth-child(2) { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+  .widget:nth-child(3) { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+  .widget:nth-child(4) { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+  .widget:nth-child(5) { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+  .widget:nth-child(6) { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); }
+  .widget:nth-child(7) { background: linear-gradient(135deg, #fbe9e7, #ffccbc); }
+  .widget:nth-child(8) { background: linear-gradient(135deg, #f9fbe7, #f0f4c3); }
+  .widget:nth-child(9) { background: linear-gradient(135deg, #ede7f6, #d1c4e9); }
+  .widget:nth-child(10) { background: linear-gradient(135deg, #e8eaf6, #c5cae9); }
+  .widget:nth-child(11) { background: linear-gradient(135deg, #fff8e1, #ffecb3); }
+  .widget:nth-child(12) { background: linear-gradient(135deg, #e0f2f1, #b2dfdb); }
 
   .widget-header {
     display: flex;
