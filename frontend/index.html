@@ -27,9 +27,9 @@
 
   /* ── Header ── */
   .app-header {
-    background: linear-gradient(90deg, #ff6b9d, #ffa726, #66bb6a, #42a5f5, #ab47bc);
-    background-size: 300% 100%;
-    animation: rainbowBar 6s linear infinite;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #667eea 100%);
+    background-size: 200% 200%;
+    animation: headerFlow 10s ease infinite;
     padding: 18px 24px;
     text-align: center;
     box-shadow: 0 4px 16px rgba(0,0,0,0.18);
@@ -38,9 +38,10 @@
     z-index: 100;
   }
 
-  @keyframes rainbowBar {
-    0%   { background-position: 0% 50%; }
-    100% { background-position: 300% 50%; }
+  @keyframes headerFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .app-header h1 {
@@ -68,41 +69,43 @@
   /* ── Widget card ── */
   .widget {
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     margin-bottom: 24px;
     overflow: hidden;
-    border: 2px solid transparent;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    border: 2px solid rgba(255,255,255,0.6);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    backdrop-filter: blur(4px);
   }
 
   .widget:hover {
-    border-color: #ffa726;
-    box-shadow: 0 6px 28px rgba(255,167,38,0.18);
+    border-color: rgba(255,255,255,0.9);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
   }
 
-  /* Each widget gets a unique permanent color */
-  .widget:nth-child(1) { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
-  .widget:nth-child(2) { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
-  .widget:nth-child(3) { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
-  .widget:nth-child(4) { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
-  .widget:nth-child(5) { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
-  .widget:nth-child(6) { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); }
-  .widget:nth-child(7) { background: linear-gradient(135deg, #fbe9e7, #ffccbc); }
-  .widget:nth-child(8) { background: linear-gradient(135deg, #f9fbe7, #f0f4c3); }
-  .widget:nth-child(9) { background: linear-gradient(135deg, #ede7f6, #d1c4e9); }
-  .widget:nth-child(10) { background: linear-gradient(135deg, #e8eaf6, #c5cae9); }
-  .widget:nth-child(11) { background: linear-gradient(135deg, #fff8e1, #ffecb3); }
-  .widget:nth-child(12) { background: linear-gradient(135deg, #e0f2f1, #b2dfdb); }
+  /* Each widget gets a unique elegant pastel */
+  .widget:nth-child(1) { background: linear-gradient(145deg, #ffeef8, #fce4ec); }
+  .widget:nth-child(2) { background: linear-gradient(145deg, #eef9ee, #e8f5e9); }
+  .widget:nth-child(3) { background: linear-gradient(145deg, #eef5ff, #e3f2fd); }
+  .widget:nth-child(4) { background: linear-gradient(145deg, #fff8ee, #fff3e0); }
+  .widget:nth-child(5) { background: linear-gradient(145deg, #f8eeff, #f3e5f5); }
+  .widget:nth-child(6) { background: linear-gradient(145deg, #eefcfc, #e0f7fa); }
+  .widget:nth-child(7) { background: linear-gradient(145deg, #fff5ee, #fbe9e7); }
+  .widget:nth-child(8) { background: linear-gradient(145deg, #fcfcee, #f9fbe7); }
+  .widget:nth-child(9) { background: linear-gradient(145deg, #f3eeff, #ede7f6); }
+  .widget:nth-child(10) { background: linear-gradient(145deg, #eef0ff, #e8eaf6); }
+  .widget:nth-child(11) { background: linear-gradient(145deg, #fffbee, #fff8e1); }
+  .widget:nth-child(12) { background: linear-gradient(145deg, #eefaf9, #e0f2f1); }
 
   .widget-header {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 12px 18px;
-    background: linear-gradient(90deg, #aeea00, #c6ef00);
+    background: linear-gradient(90deg, #667eea, #764ba2);
     font-weight: 700;
     font-size: 1rem;
-    color: #2d2d2d;
+    color: #fff;
     letter-spacing: 0.3px;
   }
 
