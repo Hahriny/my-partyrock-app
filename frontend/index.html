@@ -32,18 +32,16 @@
     font-weight: 900;
     color: #fff;
     text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-
-  .app-header h1 .title-text {
-    background: linear-gradient(90deg, #fff, #ffd6e8, #d6e8ff, #d6ffe8, #ffe8d6, #fff);
+    position: relative;
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, rgba(255,182,193,0.4), rgba(173,216,230,0.4), rgba(144,238,144,0.4), rgba(255,218,185,0.4), rgba(221,160,221,0.4), rgba(255,182,193,0.4));
     background-size: 300% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: softTitleFlow 10s ease infinite;
+    animation: highlightFlow 8s ease infinite;
   }
 
-  @keyframes softTitleFlow {
+  @keyframes highlightFlow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
@@ -716,7 +714,7 @@
 
 <!-- ═══ APP HEADER ═══ -->
 <header class="app-header">
-  <h1>🌈 <span class="title-text">Learning Steps For Autistic Kids</span> ⭐</h1>
+  <h1>🌈 Learning Steps For Autistic Kids ⭐</h1>
   <p>Your happy, safe, and fun learning space! 💛</p>
 </header>
 
