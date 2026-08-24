@@ -67,7 +67,7 @@
 
   /* ── Widget card ── */
   .widget {
-    background: #fff;
+    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,245,200,0.7));
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.10);
     margin-bottom: 24px;
@@ -79,6 +79,18 @@
   .widget:hover {
     border-color: #ffa726;
     box-shadow: 0 6px 28px rgba(255,167,38,0.18);
+  }
+
+  .widget:nth-child(odd) {
+    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(225,245,254,0.7));
+  }
+
+  .widget:nth-child(3n) {
+    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(243,229,245,0.7));
+  }
+
+  .widget:nth-child(4n) {
+    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(232,245,233,0.7));
   }
 
   .widget-header {
@@ -318,6 +330,8 @@
     resize: vertical;
     min-height: 110px;
     line-height: 1.6;
+    background: linear-gradient(180deg, #fffde7, #fff9c4);
+    border-color: #ffe082;
   }
 
   /* ── Run All button ── */
@@ -349,9 +363,9 @@
     height: 340px;
     overflow-y: auto;
     padding: 16px;
-    background: #fafafa;
+    background: linear-gradient(180deg, #fffde7 0%, #fff3e0 50%, #fce4ec 100%);
     border-radius: 12px;
-    border: 1px solid #eeeeee;
+    border: 1px solid #ffe0b2;
     font-size: 0.97rem;
     line-height: 1.7;
     scrollbar-width: thin;
@@ -450,7 +464,7 @@
     border: 2px solid #e0e0e0;
     border-radius: 14px;
     overflow: hidden;
-    background: #fff;
+    background: linear-gradient(180deg, #e8f5e9, #f1f8e9);
   }
 
   .chat-messages {
@@ -463,6 +477,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    background: linear-gradient(180deg, #f9fbe7, #fff9c4, #fff3e0);
   }
 
   .chat-messages::-webkit-scrollbar { width: 6px; }
