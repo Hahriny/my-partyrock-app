@@ -699,6 +699,60 @@
     font-style: italic;
   }
 
+  /* ── Quiz Answer Dropdowns ── */
+  .quiz-question {
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1.5px solid #e0e0e0;
+    transition: border-color 0.3s;
+  }
+
+  .quiz-question.correct {
+    border-color: #66bb6a;
+    background: #e8f5e9;
+  }
+
+  .quiz-question.incorrect {
+    border-color: #ef5350;
+    background: #ffebee;
+  }
+
+  .quiz-question-label {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .quiz-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #fafafa;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .quiz-select:focus {
+    outline: none;
+    border-color: #43cea2;
+  }
+
+  .quiz-feedback {
+    margin-top: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-height: 1.2em;
+  }
+
+  .quiz-feedback.correct { color: #2e7d32; }
+  .quiz-feedback.incorrect { color: #c62828; }
+
   /* ── Placeholder text ── */
   .placeholder-text { color: #bbb; font-style: italic; padding: 20px; text-align: center; }
 </style>
@@ -809,11 +863,13 @@
     </div>
   </div>
 
-  <!-- ═══ WIDGET 6 — My Answers ═══ -->
+  <!-- ═══ WIDGET 6 — My Answers (Interactive Quiz) ═══ -->
   <div class="widget">
     <div class="widget-header"><span class="icon">✏️</span> My Answers</div>
     <div class="widget-body">
-      <textarea id="myAnswers" placeholder="Write your answers here! Take your time, there is no rush 😊✏️"></textarea>
+      <div id="quiz-answers">
+        <p class="placeholder-text">Your answer choices will appear here after the lesson loads! Pick the correct answers below 😊✨</p>
+      </div>
     </div>
   </div>
 
@@ -1186,6 +1242,9 @@ async function runAll() {
 
   await Promise.allSettled(promises);
 
+  // Generate quiz questions based on topic
+  generateQuiz(topic);
+
   btn.disabled = false;
   btn.textContent = '✨ Start My Learning! ✨';
 }
@@ -1299,6 +1358,92 @@ async function sendChat() {
 
   sendBtn.disabled = false;
   input.focus();
+}
+
+function generateQuiz(topic) {
+  const quizContainer = document.getElementById('quiz-answers');
+  
+  const quizData = {
+    'Picture Matching': [
+      { question: 'What color is a banana? 🍌', options: ['Red', 'Yellow', 'Blue', 'Green'], correct: 1 },
+      { question: 'Which animal says "Meow"? 🐱', options: ['Dog', 'Bird', 'Cat', 'Fish'], correct: 2 },
+      { question: 'Match: A round orange fruit is a... 🍊', options: ['Apple', 'Grape', 'Orange', 'Banana'], correct: 2 },
+    ],
+    'Math Calculation': [
+      { question: 'What is 2 + 3? ➕', options: ['4', '5', '6', '3'], correct: 1 },
+      { question: 'What is 7 - 2? ➖', options: ['3', '4', '5', '6'], correct: 2 },
+      { question: 'What is 4 + 4? ➕', options: ['6', '7', '8', '9'], correct: 2 },
+    ],
+    'English and Sentences': [
+      { question: 'Which word means "happy"? 😊', options: ['Sad', 'Angry', 'Joyful', 'Tired'], correct: 2 },
+      { question: 'Fill in: The cat ___ on the mat.', options: ['fly', 'sat', 'swim', 'run'], correct: 1 },
+      { question: 'Which is a complete sentence?', options: ['Running fast', 'The dog runs fast.', 'Very big', 'Blue sky'], correct: 1 },
+    ],
+    'Fun Quiz': [
+      { question: 'How many legs does a spider have? 🕷️', options: ['6', '8', '4', '10'], correct: 1 },
+      { question: 'What planet do we live on? 🌍', options: ['Mars', 'Earth', 'Moon', 'Sun'], correct: 1 },
+      { question: 'Which season is cold? ❄️', options: ['Summer', 'Spring', 'Winter', 'Autumn'], correct: 2 },
+    ],
+    'Daily Living Skills': [
+      { question: 'What do you use to brush your teeth? 🦷', options: ['Comb', 'Toothbrush', 'Spoon', 'Towel'], correct: 1 },
+      { question: 'Before eating, you should... 🧼', options: ['Run', 'Wash hands', 'Sleep', 'Jump'], correct: 1 },
+      { question: 'Where do dirty clothes go? 👕', options: ['Fridge', 'Bed', 'Laundry basket', 'Table'], correct: 2 },
+    ],
+  };
+
+  const questions = quizData[topic] || quizData['Picture Matching'];
+  
+  quizContainer.innerHTML = '<p style="font-weight:700;color:#333;margin-bottom:12px;font-size:1rem;">Choose the correct answer for each question! 🎯</p>';
+
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-question';
+    
+    const label = document.createElement('div');
+    label.className = 'quiz-question-label';
+    label.textContent = `${i + 1}. ${q.question}`;
+    div.appendChild(label);
+
+    const select = document.createElement('select');
+    select.className = 'quiz-select';
+    
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = '-- Choose your answer --';
+    select.appendChild(defaultOpt);
+
+    q.options.forEach((opt, idx) => {
+      const option = document.createElement('option');
+      option.value = idx;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+
+    const feedback = document.createElement('div');
+    feedback.className = 'quiz-feedback';
+
+    select.addEventListener('change', function() {
+      if (this.value === '') {
+        feedback.textContent = '';
+        feedback.className = 'quiz-feedback';
+        div.className = 'quiz-question';
+        return;
+      }
+      if (parseInt(this.value) === q.correct) {
+        feedback.textContent = '✅ Correct! Great job! ⭐';
+        feedback.className = 'quiz-feedback correct';
+        div.className = 'quiz-question correct';
+      } else {
+        feedback.textContent = '❌ Try again! You can do it! 💪';
+        feedback.className = 'quiz-feedback incorrect';
+        div.className = 'quiz-question incorrect';
+      }
+    });
+
+    div.appendChild(select);
+    div.appendChild(feedback);
+    quizContainer.appendChild(div);
+  });
 }
 
 function renderChatText(text) {
