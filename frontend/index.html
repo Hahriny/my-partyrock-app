@@ -1242,8 +1242,12 @@ async function runAll() {
 
   await Promise.allSettled(promises);
 
-  // Generate quiz questions based on topic
-  generateQuiz(topic);
+  // Wait a moment for lesson text to accumulate, then generate quiz from it
+  setTimeout(() => {
+    if (lessonText && lessonText.length > 50) {
+      generateQuizFromLesson(lessonText, topic);
+    }
+  }, 3000);
 
   btn.disabled = false;
   btn.textContent = '✨ Start My Learning! ✨';
@@ -1358,6 +1362,113 @@ async function sendChat() {
 
   sendBtn.disabled = false;
   input.focus();
+}
+
+async function generateQuizFromLesson(lesson, topic) {
+  const quizContainer = document.getElementById('quiz-answers');
+  quizContainer.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div><span>Creating your quiz from the lesson... 🎯</span></div>';
+
+  // Ask the friendly helper to generate quiz questions based on the lesson
+  try {
+    const resp = await fetch(STREAM_URLS.friendly_learning_helper, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('inputName').value.trim() || 'Friend',
+        age: parseInt(document.getElementById('inputAge').value, 10),
+        mood: selectedMood,
+        topic: topic,
+        lesson: lesson.slice(0, 2000),
+        history: [],
+        message: `Based on this lesson content, create exactly 3 multiple choice questions to test the learner's understanding. Format your response EXACTLY as JSON like this (no other text):
+[{"question":"What is 2+3?","options":["4","5","6","7"],"correct":1},{"question":"Another question?","options":["A","B","C","D"],"correct":0}]
+The "correct" field is the index (0-based) of the correct option. Make questions simple and directly from the lesson content. Only output the JSON array, nothing else.`,
+        session_id: sessionId + '-quiz',
+      }),
+    });
+
+    const text = await resp.text();
+    
+    // Try to extract JSON from the response
+    let questions = null;
+    try {
+      // Find JSON array in the response
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        questions = JSON.parse(jsonMatch[0]);
+      }
+    } catch(e) {}
+
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+      // Fallback to static questions if AI didn't return valid JSON
+      generateQuiz(topic);
+      return;
+    }
+
+    // Render the quiz
+    quizContainer.innerHTML = '<p style="font-weight:700;color:#333;margin-bottom:12px;font-size:1rem;">Answer these questions from your lesson! 🎯</p>';
+
+    questions.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'quiz-question';
+      
+      const label = document.createElement('div');
+      label.className = 'quiz-question-label';
+      label.textContent = `${i + 1}. ${q.question}`;
+      div.appendChild(label);
+
+      const select = document.createElement('select');
+      select.className = 'quiz-select';
+      
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = '';
+      defaultOpt.textContent = '-- Choose your answer --';
+      select.appendChild(defaultOpt);
+
+      q.options.forEach((opt, idx) => {
+        const option = document.createElement('option');
+        option.value = idx;
+        option.textContent = opt;
+        select.appendChild(option);
+      });
+
+      const feedback = document.createElement('div');
+      feedback.className = 'quiz-feedback';
+
+      select.addEventListener('change', function() {
+        if (this.value === '') {
+          feedback.textContent = '';
+          feedback.className = 'quiz-feedback';
+          div.className = 'quiz-question';
+          return;
+        }
+        if (parseInt(this.value) === q.correct) {
+          feedback.textContent = '✅ Correct! Great job! ⭐';
+          feedback.className = 'quiz-feedback correct';
+          div.className = 'quiz-question correct';
+          select.disabled = true;
+        } else {
+          feedback.textContent = '❌ Not quite! Try again! 💪';
+          feedback.className = 'quiz-feedback incorrect';
+          div.className = 'quiz-question incorrect';
+          // Reset after a moment so they can try again
+          setTimeout(() => {
+            div.className = 'quiz-question';
+            feedback.textContent = '';
+            feedback.className = 'quiz-feedback';
+          }, 1500);
+        }
+      });
+
+      div.appendChild(select);
+      div.appendChild(feedback);
+      quizContainer.appendChild(div);
+    });
+
+  } catch(err) {
+    // Fallback to static questions
+    generateQuiz(topic);
+  }
 }
 
 function generateQuiz(topic) {
