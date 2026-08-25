@@ -783,6 +783,110 @@
   /* ── Placeholder text ── */
   .placeholder-text { color: #bbb; font-style: italic; padding: 20px; text-align: center; }
 
+  /* ── Floating Chat Sidebar ── */
+  .chat-sidebar {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 340px;
+    max-height: 500px;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1.5px solid rgba(67,206,162,0.2);
+  }
+
+  .chat-sidebar-header {
+    background: linear-gradient(90deg, #43cea2, #2193b0);
+    color: #fff;
+    padding: 12px 18px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  .chat-sidebar-header:hover { opacity: 0.9; }
+
+  .chat-toggle-icon {
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+  }
+
+  .chat-sidebar-body {
+    display: flex;
+    flex-direction: column;
+    max-height: 420px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .chat-sidebar-body.collapsed {
+    max-height: 0;
+  }
+
+  .chat-sidebar .chat-messages {
+    flex: 1;
+    padding: 12px;
+    min-height: 200px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: linear-gradient(160deg, #fef9ff, #f0f7ff, #f5fff5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-sidebar .chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f9fffe;
+    border-top: 1px solid #e8f5e9;
+  }
+
+  .chat-sidebar .suggestion-btn {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+
+  .chat-sidebar .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid #e8f5e9;
+    background: #fafffe;
+  }
+
+  .chat-sidebar .chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 16px;
+    font-size: 0.85rem;
+  }
+
+  .chat-sidebar .chat-send-btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    border-radius: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .chat-sidebar {
+      width: calc(100% - 20px);
+      right: 10px;
+    }
+  }
+
   /* ── Fun Footer Characters ── */
   .fun-footer {
     text-align: center;
@@ -978,35 +1082,7 @@
     </div>
   </div>
 
-  <!-- ═══ WIDGET 10 — Friendly Learning Helper (Chat) ═══ -->
-  <div class="widget">
-    <div class="widget-header"><span class="icon">✨</span> Friendly Learning Helper</div>
-    <div class="widget-body">
-      <div class="chat-container">
-        <div class="chat-messages" id="chatMessages">
-          <div class="chat-bubble assistant">
-            Hi there! I am SO happy you are here! 🌈 I am your friendly learning helper.
-            I will always use simple words and help you one step at a time.
-            You are already doing something amazing just by being here! 💛
-            Ask me anything — no question is too small! 😊⭐
-          </div>
-        </div>
-        <div class="chat-suggestions" id="chatSuggestions">
-          <button class="suggestion-btn" onclick="askSuggestion(this)">🐶 Tell me about animals!</button>
-          <button class="suggestion-btn" onclick="askSuggestion(this)">🌈 Why is the sky blue?</button>
-          <button class="suggestion-btn" onclick="askSuggestion(this)">🧮 Help me with my lesson!</button>
-          <button class="suggestion-btn" onclick="askSuggestion(this)">😊 Tell me something fun!</button>
-        </div>
-        <div class="chat-input-row">
-          <input type="text" class="chat-input" id="chatInput"
-            placeholder="Type a question or say hi! I am here to help you 😊"
-            onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); sendChat(); }" />
-          <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">Send 💬</button>
-          <button class="chat-clear-btn" onclick="clearChat()">Clear 🗑️</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Chat moved to side panel -->
 
   <!-- ═══ WIDGET 11 — Your Star Badge ═══ -->
   <div class="widget">
@@ -1051,6 +1127,33 @@
   </div>
 
 </div><!-- /container -->
+
+<!-- ═══ FLOATING CHAT SIDEBAR ═══ -->
+<div class="chat-sidebar" id="chatSidebar">
+  <div class="chat-sidebar-header" onclick="toggleChatSidebar()">
+    <span>💬 Friendly Helper</span>
+    <span class="chat-toggle-icon" id="chatToggleIcon">▼</span>
+  </div>
+  <div class="chat-sidebar-body" id="chatSidebarBody">
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-bubble assistant">
+        Hi there! 🌈 I am your friendly learning helper.
+        Ask me anything — no question is too small! 😊⭐
+      </div>
+    </div>
+    <div class="chat-suggestions" id="chatSuggestions">
+      <button class="suggestion-btn" onclick="askSuggestion(this)">🐶 Animals!</button>
+      <button class="suggestion-btn" onclick="askSuggestion(this)">🧮 Help me!</button>
+      <button class="suggestion-btn" onclick="askSuggestion(this)">😊 Fun fact!</button>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" class="chat-input" id="chatInput"
+        placeholder="Ask me anything 😊"
+        onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); sendChat(); }" />
+      <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ═══════════════════════════════════════════════════════
@@ -1363,10 +1466,17 @@ function renderChatWelcome() {
 
 function clearChat() {
   chatHistory = [];
-  sessionId = crypto.randomUUID();  // new session
+  sessionId = crypto.randomUUID();
   renderChatWelcome();
-  // Show suggestions again
-  document.getElementById('chatSuggestions').style.display = 'flex';
+  const suggestions = document.getElementById('chatSuggestions');
+  if (suggestions) suggestions.style.display = 'flex';
+}
+
+function toggleChatSidebar() {
+  const body = document.getElementById('chatSidebarBody');
+  const icon = document.getElementById('chatToggleIcon');
+  body.classList.toggle('collapsed');
+  icon.textContent = body.classList.contains('collapsed') ? '▲' : '▼';
 }
 
 function askSuggestion(btn) {
