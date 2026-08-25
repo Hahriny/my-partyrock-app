@@ -611,16 +611,9 @@
 
   .illustration-center {
     font-size: 5.5rem;
-    animation: bounce 2s ease-in-out infinite;
-    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.1));
     z-index: 2;
     position: relative;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0) scale(1); }
-    30% { transform: translateY(-16px) scale(1.15); }
-    60% { transform: translateY(-4px) scale(1.05); }
   }
 
   .illustration-label {
@@ -840,15 +833,6 @@
       <div class="widget-header"><span class="icon">🎨</span> Lesson Visual Aid</div>
       <div class="widget-body">
         <div class="fun-illustration" id="illustration-visual-aid">
-          <div class="float-emoji e1">🌈</div>
-          <div class="float-emoji e2">⭐</div>
-          <div class="float-emoji e3">🎨</div>
-          <div class="float-emoji e4">📚</div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
           <div class="illustration-center" id="visual-aid-center">🐱🐶</div>
           <div class="illustration-label">Learning is fun!</div>
         </div>
@@ -858,15 +842,6 @@
       <div class="widget-header"><span class="icon">🖼️</span> Topic Helper Image</div>
       <div class="widget-body">
         <div class="fun-illustration" id="illustration-topic-helper">
-          <div class="float-emoji e1">✨</div>
-          <div class="float-emoji e2">🌟</div>
-          <div class="float-emoji e3">💛</div>
-          <div class="float-emoji e4">🎉</div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
-          <div class="sparkle"></div>
           <div class="illustration-center" id="topic-helper-center">🧩</div>
           <div class="illustration-label">You can do it!</div>
         </div>
@@ -957,11 +932,11 @@ function selectTopic(btn) {
 
 function updateIllustrations() {
   const topicVisuals = {
-    'Picture Matching': { center: '🐱🐶🐸', helper: '🧩🎯', emojis: ['🦋','🌺','🐠','🌈'], label1: 'Match the pictures!', label2: 'Find the pairs!' },
-    'Math Calculation': { center: '🔢✨', helper: '🧮🍎', emojis: ['➕','💯','🔟','🎲'], label1: 'Count with me!', label2: 'Numbers are magic!' },
-    'English and Sentences': { center: '📖✏️', helper: '🔤💬', emojis: ['📝','📚','🅰️','💫'], label1: 'Words are fun!', label2: 'Read and shine!' },
-    'Fun Quiz': { center: '🧠💡', helper: '🏆🎯', emojis: ['❓','✅','🎉','🌟'], label1: 'Quiz time!', label2: 'You are brilliant!' },
-    'Daily Living Skills': { center: '🏠💪', helper: '🌟👏', emojis: ['🧹','🍽️','👕','🚿'], label1: 'Life hero!', label2: 'Super skills!' },
+    'Picture Matching': { center: '🐱🐶🐸', helper: '🧩🎯', label1: 'Match the pictures!', label2: 'Find the pairs!' },
+    'Math Calculation': { center: '🔢✨', helper: '🧮🍎', label1: 'Count with me!', label2: 'Numbers are magic!' },
+    'English and Sentences': { center: '📖✏️', helper: '🔤💬', label1: 'Words are fun!', label2: 'Read and shine!' },
+    'Fun Quiz': { center: '🧠💡', helper: '🏆🎯', label1: 'Quiz time!', label2: 'You are brilliant!' },
+    'Daily Living Skills': { center: '🏠💪', helper: '🌟👏', label1: 'Life hero!', label2: 'Super skills!' },
   };
   const v = topicVisuals[selectedTopic] || topicVisuals['Picture Matching'];
   
@@ -972,14 +947,8 @@ function updateIllustrations() {
 
   const ill1 = document.getElementById('illustration-visual-aid');
   const ill2 = document.getElementById('illustration-topic-helper');
-  if (ill1) {
-    ill1.querySelectorAll('.float-emoji').forEach((el, i) => el.textContent = v.emojis[i] || '⭐');
-    ill1.querySelector('.illustration-label').textContent = v.label1;
-  }
-  if (ill2) {
-    ill2.querySelectorAll('.float-emoji').forEach((el, i) => el.textContent = v.emojis[i] || '✨');
-    ill2.querySelector('.illustration-label').textContent = v.label2;
-  }
+  if (ill1) ill1.querySelector('.illustration-label').textContent = v.label1;
+  if (ill2) ill2.querySelector('.illustration-label').textContent = v.label2;
 }
 
 function updateAge(val) {
