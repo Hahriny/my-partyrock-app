@@ -31,20 +31,22 @@ def writing_practice():
 The learner's name is {name} and they are {age} years old.
 The current lesson topic is: {topic}
 
-Based on the learner's age, create a fun writing practice activity:
+Create a fun FILL IN THE BLANKS writing practice. Use ___ (three underscores) for each blank the learner needs to fill in.
 
 ▶ For AGE 5–10:
-- Show 3 simple trace-and-copy sentences related to the topic
-- Each sentence should be 4–5 words with an emoji
-- After each sentence write: Now you try! ✏️
-- End with: Great writing! You are a star! ⭐
+- Create 4 simple sentences related to the topic
+- Each sentence must have ONE blank (___) where a word is missing
+- After each sentence, show the correct answer in parentheses
+- Example format: "The cat is ___ (soft)"
+- Use simple words and emojis
 
 ▶ For AGE 11–19:
-- Give a short creative writing prompt related to {topic} with 2–3 sentence starters to complete
-- Include one grammar tip
-- End with a motivational message
+- Create 4 sentences related to {topic} with ONE blank (___) each
+- Make sentences slightly longer and more challenging
+- After each sentence, show the correct answer in parentheses
+- Include a short grammar tip at the end
 
-Always keep the tone warm, patient, and celebratory."""
+IMPORTANT: Always use exactly ___ (three underscores) for blanks. Keep the tone warm and celebratory."""
 
     body = {
         "anthropic_version": "bedrock-2023-05-31",

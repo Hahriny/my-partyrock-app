@@ -953,10 +953,6 @@
       <div class="output-panel" id="panel-writing">
         <span class="placeholder-text">Your writing practice will appear here! ✏️⭐</span>
       </div>
-      <div style="margin-top:14px;">
-        <label class="field-label">✏️ Write your answers here!</label>
-        <textarea id="writingArea" placeholder="Start writing here! Take your time, there is no rush. You are doing great! 😊✏️" style="background:#fffde7; border:2px dashed #43cea2; border-radius:14px; min-height:120px; font-size:1rem; padding:14px;"></textarea>
-      </div>
     </div>
   </div>
 
@@ -1119,7 +1115,7 @@ function updateAge(val) {
 // ═══════════════════════════════════════════════════════
 //  Markdown renderer (line by line)
 // ═══════════════════════════════════════════════════════
-function renderMdLine(text) {
+function renderMdLine(text, enableBlanks) {
   const span = document.createElement('span');
   span.className = 'md-line';
 
@@ -1129,8 +1125,8 @@ function renderMdLine(text) {
     return span;
   }
 
-  // Insert a text input box after "Now you try" lines or sentence starters ending with ...
-  if (/now you try/i.test(text) || /\.\.\.\s*$/.test(text.trim()) || /___/.test(text)) {
+  // Insert inline input for ___ blanks (only in writing practice panel)
+  if (/___/.test(text) && enableBlanks) {
     let cls = '';
     let cleaned = text;
     if (/^\* /.test(text) || /^- /.test(text)) { cls = 'md-bullet'; cleaned = text.replace(/^[*-] /, ''); }
@@ -1139,22 +1135,11 @@ function renderMdLine(text) {
     cleaned = cleaned
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/___+/g, '<span style="border-bottom:2px dashed #ffa726;padding:0 30px;"></span>');
+      .replace(/___+/g, '<input type="text" class="inline-writing-input" placeholder="Write here ✏️" />');
 
     if (cls) span.classList.add(cls);
     span.innerHTML = cleaned;
-
-    // Create a wrapper that holds the label + input
-    const wrapper = document.createElement('div');
-    wrapper.className = 'md-line';
-    wrapper.appendChild(span);
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'inline-writing-input';
-    input.placeholder = 'Write your answer here! ✏️';
-    wrapper.appendChild(input);
-    return wrapper;
+    return span;
   }
 
   let cls = '';
@@ -1181,7 +1166,7 @@ function renderMdLine(text) {
 //  Stream helper — reads a streaming Lambda response and
 //  appends rendered lines to a container element
 // ═══════════════════════════════════════════════════════
-async function streamToPanel(url, body, panelEl, onChunk) {
+async function streamToPanel(url, body, panelEl, onChunk, enableBlanks) {
   // Clear panel & show spinner
   panelEl.innerHTML = '';
   const spinWrap = document.createElement('div');
@@ -1230,7 +1215,7 @@ async function streamToPanel(url, body, panelEl, onChunk) {
 
       for (const line of lines) {
         cursorLine.remove();
-        const mdSpan = renderMdLine(line);
+        const mdSpan = renderMdLine(line, enableBlanks);
         panelEl.appendChild(mdSpan);
         // Re-add cursor on fresh line
         cursorLine = document.createElement('span');
@@ -1246,7 +1231,7 @@ async function streamToPanel(url, body, panelEl, onChunk) {
     // Flush remaining buffer
     if (buffer.trim()) {
       cursorLine.remove();
-      panelEl.appendChild(renderMdLine(buffer));
+      panelEl.appendChild(renderMdLine(buffer, enableBlanks));
     } else {
       cursorLine.remove();
     }
@@ -1334,7 +1319,9 @@ async function runAll() {
     streamToPanel(
       STREAM_URLS.writing_practice,
       sharedInputs,
-      document.getElementById('panel-writing')
+      document.getElementById('panel-writing'),
+      null,
+      true
     ),
     streamToPanel(
       STREAM_URLS.your_star_badge,
