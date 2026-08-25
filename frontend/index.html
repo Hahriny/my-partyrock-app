@@ -559,6 +559,33 @@
 
   .chat-clear-btn:hover { transform: scale(1.04); }
 
+  /* Chat suggestion buttons */
+  .chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid #f0f0f0;
+    background: #f9fffe;
+  }
+
+  .suggestion-btn {
+    background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+    border: 1.5px solid #b2dfdb;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #00695c;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.2s;
+  }
+
+  .suggestion-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #b2dfdb, #c8e6c9);
+  }
+
   /* ── Two-column input row ── */
   .two-col {
     display: grid;
@@ -918,6 +945,12 @@
             Ask me anything — no question is too small! 😊⭐
           </div>
         </div>
+        <div class="chat-suggestions" id="chatSuggestions">
+          <button class="suggestion-btn" onclick="askSuggestion(this)">🐶 Tell me about animals!</button>
+          <button class="suggestion-btn" onclick="askSuggestion(this)">🌈 Why is the sky blue?</button>
+          <button class="suggestion-btn" onclick="askSuggestion(this)">🧮 Help me with my lesson!</button>
+          <button class="suggestion-btn" onclick="askSuggestion(this)">😊 Tell me something fun!</button>
+        </div>
         <div class="chat-input-row">
           <input type="text" class="chat-input" id="chatInput"
             placeholder="Type a question or say hi! I am here to help you 😊"
@@ -936,6 +969,11 @@
       <div class="output-panel" id="panel-badge">
         <span class="placeholder-text">Your star badge will appear here after completing your lesson! 🌟🏆</span>
       </div>
+      <div id="performance-summary" style="display:none; margin-top:16px; padding:16px; background:linear-gradient(135deg,#e8f5e9,#fff9c4); border-radius:14px; border:1.5px solid #a5d6a7;">
+        <div id="performance-content"></div>
+      </div>
+    </div>
+  </div>
     </div>
   </div>
 
@@ -1207,7 +1245,10 @@ async function runAll() {
   // Reset lesson text and chat history for new run
   lessonText  = '';
   chatHistory = [];
+  quizScore = { correct: 0, total: 0 };
+  document.getElementById('performance-summary').style.display = 'none';
   renderChatWelcome();
+  document.getElementById('chatSuggestions').style.display = 'flex';
 
   const btn = document.getElementById('runAllBtn');
   btn.disabled = true;
@@ -1270,6 +1311,51 @@ function clearChat() {
   chatHistory = [];
   sessionId = crypto.randomUUID();  // new session
   renderChatWelcome();
+  // Show suggestions again
+  document.getElementById('chatSuggestions').style.display = 'flex';
+}
+
+function askSuggestion(btn) {
+  const text = btn.textContent.replace(/^[^\s]+\s/, ''); // remove emoji prefix
+  document.getElementById('chatInput').value = btn.textContent;
+  sendChat();
+  // Hide suggestions after first use
+  document.getElementById('chatSuggestions').style.display = 'none';
+}
+
+// Track quiz performance
+let quizScore = { correct: 0, total: 0 };
+
+function updatePerformanceSummary() {
+  const summary = document.getElementById('performance-summary');
+  const content = document.getElementById('performance-content');
+  summary.style.display = 'block';
+  
+  const percent = quizScore.total > 0 ? Math.round((quizScore.correct / quizScore.total) * 100) : 0;
+  const name = document.getElementById('inputName').value.trim() || 'Friend';
+  
+  let message = '';
+  let quote = '';
+  
+  if (percent === 100) {
+    message = `🌟 PERFECT SCORE! ${name}, you got ALL answers correct! You are a SUPERSTAR! 🌟`;
+    quote = `"Every expert was once a beginner. Today you showed you are already amazing!" ✨`;
+  } else if (percent >= 70) {
+    message = `🎉 Great job, ${name}! You got ${quizScore.correct} out of ${quizScore.total} correct! You are doing wonderfully!`;
+    quote = `"Mistakes help us grow. You learned so much today and that makes you incredible!" 💛`;
+  } else if (percent >= 40) {
+    message = `👏 Good effort, ${name}! You got ${quizScore.correct} out of ${quizScore.total}. Keep going — you are learning every day!`;
+    quote = `"The more you practice, the stronger you become. You will do even better next time!" 🌈`;
+  } else {
+    message = `💪 Keep trying, ${name}! You got ${quizScore.correct} out of ${quizScore.total}. Every try makes you smarter!`;
+    quote = `"It is okay to make mistakes. That is how we learn! You are brave for trying!" 🦋`;
+  }
+  
+  content.innerHTML = `
+    <div style="font-weight:800;font-size:1.1rem;color:#2e7d32;margin-bottom:8px;">📊 Your Learning Progress</div>
+    <div style="font-size:1rem;color:#333;margin-bottom:10px;">${message}</div>
+    <div style="background:rgba(255,255,255,0.7);padding:12px 16px;border-radius:10px;font-style:italic;color:#4a148c;font-size:0.95rem;">${quote}</div>
+  `;
 }
 
 async function sendChat() {
@@ -1447,10 +1533,15 @@ The "correct" field is the index (0-based) of the correct option. Make questions
           feedback.className = 'quiz-feedback correct';
           div.className = 'quiz-question correct';
           select.disabled = true;
+          quizScore.correct++;
+          quizScore.total++;
+          updatePerformanceSummary();
         } else {
           feedback.textContent = '❌ Not quite! Try again! 💪';
           feedback.className = 'quiz-feedback incorrect';
           div.className = 'quiz-question incorrect';
+          quizScore.total++;
+          updatePerformanceSummary();
           // Reset after a moment so they can try again
           setTimeout(() => {
             div.className = 'quiz-question';
